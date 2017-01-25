@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Custom Url Redirect</name>
+    <code>custom-url-redirect</code>
+    <version>1.0</version>
+    <author>Oleksandr Borys aka barbaris</author>
+    <link>https://github.com/barbaris-in/OpenCart-Custom-Url-Redirect</link>
+    <file path="admin/controller/common/column_left.php">
+        <operation>
+            <search><![CDATA[
+            if ($catalog) {
+            ]]></search>
+            <add position="before"><![CDATA[
+
+            $this->load->language('catalog/redirect');
+
+			if ($this->user->hasPermission('access', 'catalog/redirect')) {
+				$catalog[] = array(
+					'name'	   => $this->language->get('text_redirect'),
+					'href'     => $this->url->link('catalog/redirect', 'token=' . $this->session->data['token'], true),
+					'children' => array()
+				);
+			}
+
+            ]]></add>
+        </operation>
+    </file>
+    <file path="catalog/controller/startup/seo_url.php">
+        <operation>
+            <search><![CDATA[
+            if (isset($this->request->get['_route_'])) {
+            ]]></search>
+            <add position="after"><![CDATA[
+			$route = $this->request->get['_route_'];
+			$route = $this->db->escape($route);
+			$query1 = $this->db->query("SELECT * FROM " . DB_PREFIX . "redirect WHERE redirect_from = '" . $route . "'");
+
+            if ($query1->num_rows) {
+                $arg = '';
+                $this->response->redirect("/".$query1->row['redirect_to'] . $arg, 301);
+                return;
+            }
+            ]]></add>
+        </operation>
+    </file>
+    <file path="admin/language/ru-ru/common/column_left.php">
+        <operation>
+            <search><![CDATA[
+            $_['text_information']               = 'Статьи';
+            ]]></search>
+            <add position="after"><![CDATA[
+            $_['text_redirect']               = 'Редиректы';
+            ]]></add>
+        </operation>
+    </file>
+</modification>
