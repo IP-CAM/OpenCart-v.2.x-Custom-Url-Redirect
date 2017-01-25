@@ -3,7 +3,7 @@
 Redirection
 ===========
 
-This is a OpenCart plugin to manage 301 redirections. This is particularly useful if you are migrating pages from an old website.
+This is a OpenCart plugin to manage 301 redirects. This is particularly useful if you are migrating pages from an old website.
 
 Installation
 ============
